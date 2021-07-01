@@ -15,7 +15,7 @@ export const config = {
   },
 };
 
-export default function postAPI(req, res) {
+export default async function postAPI(req, res) {
   if (req.method != "POST") {
     res.status(405).send("Method not allowed.");
     return;
@@ -51,6 +51,7 @@ export default function postAPI(req, res) {
       .catch((err) => console.log(err));
   });
 
-  // receive reply
-  res.status(200).json({ name: "John Doe" });
+  // redirect
+  // await new Promise((r) => setTimeout(r, 2000));
+  res.redirect(303, "http://localhost:2368");
 }
