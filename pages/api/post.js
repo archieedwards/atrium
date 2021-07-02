@@ -3,9 +3,9 @@ import formidable from "formidable-serverless";
 
 // Your API config
 const api = new GhostAdminAPI({
-  url: "http://localhost:2368",
+  url: process.env.GHOST_API_URL,
   version: "v4",
-  key: "60dd846136a36346b3e17f48:48ecff2d793c49391fead9f8cdfcaf3deeb9c52294c01dda4862cf88add51ad5",
+  key: process.env.GHOST_ADMIN_API_KEY,
 });
 
 // so we can parse the form: https://gist.github.com/agmm/da47a027f3d73870020a5102388dd820
