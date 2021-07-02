@@ -23,21 +23,32 @@ export default async function postAPI(req, res) {
   // read form req: https://gist.github.com/agmm/da47a027f3d73870020a5102388dd820
   const form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  form.parse(req, (err, fields, _) => {
-    if (err) {
-      res
-        .status(500)
-        .send("Internal Server Error - error when parsing form request");
+  try {
+    const { title, content, memberID, member } = await new Promise(function (resolve, reject) {
+      form.parse(req, function (err, fields, _) {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve(fields);
+      });
+    });
+    if (!title || !memberID) {
+      res.status(400).send("Bad Request - missing fields.");
       return;
     }
-    const { title, content, member } = fields;
-    if (!title) {
-      res.status(400).send("Bad Request - title must not be empty.");
+    // check member with uuid exists
+    const members = await api.members.browse();
+    const memberExists = members.filter(obj => {
+      return obj.uuid === memberID
+    });
+    if(memberExists.length === 0){
+      res.status(400).send("Bad Request - member invalid.");
       return;
     }
-    // post it to Ghost Admin
+    // send post to Ghost Admin
     let html = `<p>${content}</p>`;
-    api.posts
+    const postResp = await api.posts
       .add(
         {
           title: title,
@@ -46,14 +57,12 @@ export default async function postAPI(req, res) {
           status: "published",
         },
         { source: "html" } // Tell the API to use HTML as the content source, instead of mobiledoc
-      )
-      .then((res) => { 
-        console.log(JSON.stringify(res))
-        res.redirect(303, process.env.GHOST_API_URL);
-      })
-      .catch((err) => {
-        console.log(err)
-        res.redirect(303, process.env.GHOST_API_URL); // for now just redirect on error
-      });
-  });
+      );
+    console.log(JSON.stringify(postResp))
+    res.redirect(303, process.env.GHOST_API_URL);
+  }catch(e){
+    console.log(e)
+    res.status(500).send("Internal Server Error");
+    return;
+  }
 }
