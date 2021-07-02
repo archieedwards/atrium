@@ -47,11 +47,13 @@ export default async function postAPI(req, res) {
         },
         { source: "html" } // Tell the API to use HTML as the content source, instead of mobiledoc
       )
-      .then((res) => console.log(JSON.stringify(res)))
-      .catch((err) => console.log(err));
+      .then((res) => { 
+        console.log(JSON.stringify(res))
+        res.redirect(303, process.env.GHOST_API_URL);
+      })
+      .catch((err) => {
+        console.log(err)
+        res.redirect(303, process.env.GHOST_API_URL); // for now just redirect on error
+      });
   });
-
-  // redirect
-  // await new Promise((r) => setTimeout(r, 2000));
-  res.redirect(303, process.env.GHOST_API_URL);
 }
