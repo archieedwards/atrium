@@ -53,5 +53,5 @@ export default async function postAPI(req, res) {
 
   // redirect
   // await new Promise((r) => setTimeout(r, 2000));
-  res.redirect(303, "http://localhost:2368");
+  res.redirect(303, process.env.GHOST_API_URL);
 }
