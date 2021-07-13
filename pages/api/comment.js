@@ -48,7 +48,7 @@ export default async function postAPI(req, res) {
     }
     // send comment to supabase
     const { supabaseResp, supabaseErr } = await supabase
-      .from('Comments')
+      .from('comments')
       .insert([
         { post_id: postID, member_id: memberID, comment: comment },
     ])
