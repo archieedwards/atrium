@@ -18,7 +18,7 @@ export default async function postAPI(req, res) {
   const form = new formidable.IncomingForm();
   form.keepExtensions = true;
   try {
-    const { postID, memberID, comment, slug } = await new Promise(function (resolve, reject) {
+    const { postID, memberID, member, comment, slug } = await new Promise(function (resolve, reject) {
       form.parse(req, function (err, fields, _) {
           if (err) {
               reject(err);
@@ -50,7 +50,7 @@ export default async function postAPI(req, res) {
     const { supabaseResp, supabaseErr } = await supabase
       .from('comments')
       .insert([
-        { post_id: postID, member_id: memberID, comment: comment },
+        { post_id: postID, member_id: memberID, member: member, content: comment },
     ])
     if (supabaseErr) {
       console.log(supabaseErr)

@@ -9,7 +9,7 @@ export default async function getAPI(req, res) {
   try {
     const { data, error } = await supabase
       .from('comments')
-      .select()
+      .select('id, member, content, created_at')
       .eq('post_id', postID)
       .order('created_at', { ascending: true });
     if (error) {
